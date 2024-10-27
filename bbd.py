@@ -2369,7 +2369,7 @@ initial_players = [
     {
         "name": "오태양",
         "types": ["NC", "내야수", "2021년 데뷔"],
-        "image_url": "nc오태양.png"
+        "image_url": "default.png"
     },
     {
         "name": "오현석",
