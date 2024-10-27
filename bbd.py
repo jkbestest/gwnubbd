@@ -33,11 +33,8 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
-with st.spinner("데이터를  불러오는 중..."):
-    time.sleep(7)
-
 st.title('KBO 선수 도감')
-st.write('**현역 국내 KBO 선수를 찾을 수 있습니다! (24/10/28 Ver.)**')
+st.write('**현역 국내 KBO 선수를 찾을 수 있습니다! (24/10/20 Ver.)**')
 st.text('24년 입단한 현역 선수까지의 검색을 지원하고 있습니다.')
 st.text("고령은퇴자가 포함되어 있습니다. (박경수, 추신수, 김강민 등등을 포함함)")
 st.text("")
@@ -2547,6 +2544,11 @@ initial_players = [
         "image_url": "default.png"
     },
     {
+        "name": "윤호솔",
+        "types": ["LG", "투수", "2013년 데뷔"],
+        "image_url": "https://lgcxydabfbch3774324.cdn.ntruss.com/KBO_IMAGE/person/middle/2024/63961.jpg"
+    },
+    {
         "name": "이강준",
         "types": ["키움", "투수", "2020년 데뷔"],
         "image_url": "default.png"
@@ -3951,6 +3953,7 @@ initial_players = [
         "types": ["한화", "포수", "2019년 데뷔"],
         "image_url": "https://lgcxydabfbch3774324.cdn.ntruss.com/KBO_IMAGE/person/middle/2024/69706.jpg"
     },
+
     {
         "name": "허용주",
         "types": ["LG", "투수", "2023년 데뷔"],
@@ -4091,18 +4094,18 @@ if "players" not in st.session_state:
     st.session_state.players = data
 
 
-
+# 검색창 생성
 search_query = st.text_input('KBO 선수 검색')
 
-
+#여러개 동시에 선택하는 기능
 team_options = st.multiselect('선수 팀 선택', ['기아', '삼성', 'LG', '두산', 'KT', 'SSG', '롯데', '한화', 'NC', '키움'])
 
 options = st.multiselect('선수 포지션 선택', ['투수', '포수', '내야수', '외야수'])
 
-
+# 검색 버튼 클릭 시 동작
 if st.button('검색'):
-    if not team_options and not options:  
-        st.warning("검색하려면 최소한 두개 이상의 필터를 선택해야 합니다.")
+    if not team_options and not options:  # 팀 또는 포지션 중 하나라도 선택하지 않았을 경우
+        st.warning("검색하려면 최소한 하나 이상의 필터를 선택해야 합니다.")
     else:
         with st.spinner('검색 중...'):
             filtered_players = st.session_state.players.copy()
@@ -4112,7 +4115,7 @@ if st.button('검색'):
                 filtered_players = [player for player in filtered_players if any(option in player['types'] for option in options)]
             if team_options:
                 filtered_players = [player for player in filtered_players if player['types'][0] in team_options]
-
+    # 포지션 필터링
         filtered_players = [
             player for player in filtered_players
             if (not options or any(option in player['types'] for option in options)) and
@@ -4126,7 +4129,7 @@ if st.button('검색'):
             st.warning("선수의 소속 팀이 없을 경우 데이터가 나오지 않을 수 있습니다.")
             st.text("일부 선수는 이미지가 없을 수 있습니다. (현 상무 소속 선수들 등등)")
             st.text("현재 소속 팀 기준입니다!")
-
+        # 두 개씩 출력
             for i in range(0, len(filtered_players), 2):
                 row_players = filtered_players[i:i+2]
                 cols = st.columns(2)
@@ -4140,11 +4143,11 @@ if st.button('검색'):
         else:
             st.warning("해당 선수 없음")
 
-
-sorted_players = sorted(st.session_state.players, key=lambda x: x['name'])  
+# 초기 선수 목록 출력
+sorted_players = sorted(st.session_state.players, key=lambda x: x['name'])  # 초기 페이지는 가나다순으로 정렬
 for i in range(0, len(sorted_players), 4):
-    row_players = sorted_players[i:i + 4]  
-    cols = st.columns(4)  
+    row_players = sorted_players[i:i + 4]  # 4명씩 가져오기
+    cols = st.columns(4)  # 4개의 열 생성
     for j in range(len(row_players)):
         with cols[j]:
             player = row_players[j]
